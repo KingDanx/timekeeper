@@ -23,10 +23,27 @@ router.get("/", async (req, res) => {
 
 //get a user
 router.get("/:id", async (req, res) => {
-  const allUsers = await pool.query(
-    `SELECT * FROM users WHERE user_id=${req.params.id} ORDER BY user_id ASC`
-  );
-  res.json(allUsers.rows);
+  try {
+    const user = await pool.query(
+      `SELECT * FROM users WHERE user_id=${req.params.id} ORDER BY user_id ASC`
+    );
+    res.json(user.rows);
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+//update a user
+router.put("/:id", async (req, res) => {
+  try {
+    const user = await pool.query(
+      `UPDATE users SET first_name=$1, last_name=$2 WHERE user_id=${req.params.id} RETURNING *`,
+      [req.body.firstName, req.body.lastName]
+    );
+    res.json(user);
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 module.exports = router;
