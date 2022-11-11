@@ -17,7 +17,16 @@ router.post("/create", async (req, res) => {
 
 //get all users
 router.get("/", async (req, res) => {
-  res.send("dog");
+  const allUsers = await pool.query(`SELECT * FROM users ORDER BY user_id ASC`);
+  res.json(allUsers.rows);
+});
+
+//get a user
+router.get("/:id", async (req, res) => {
+  const allUsers = await pool.query(
+    `SELECT * FROM users WHERE user_id=${req.params.id} ORDER BY user_id ASC`
+  );
+  res.json(allUsers.rows);
 });
 
 module.exports = router;
